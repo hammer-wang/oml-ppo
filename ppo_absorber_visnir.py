@@ -5,8 +5,7 @@ from RLMultilayer.taskenvs.tasks import get_env_fn
 from RLMultilayer.utils import cal_reward
 import torch
 
-import sys
-sys.path.insert(0, "/Users/wanghaozhu/Documents/Projects/RL_multilayer/RLMultilayer")
+import os
 
 if __name__ == '__main__':
     import argparse
@@ -20,7 +19,6 @@ if __name__ == '__main__':
     parser.add_argument('--hierarchical', action='store_true', help='if set to true, then output out the material type first, then condition the material thickness on the material type')
     parser.add_argument('--use_rnn', action='store_true')
     parser.add_argument('--spectrum_repr', action='store_true')
-    # parser.add_argument('--curriculum', action='store_true')
     args = parser.parse_args()
 
     env_kwargs = {"discrete_thick":args.discrete_thick, 'spectrum_repr':args.spectrum_repr, 'bottom_up':False, 'merit_func':cal_reward}
@@ -44,15 +42,14 @@ if __name__ == '__main__':
     eg.add('lam', [0.95])
     eg.add('max_ep_len', [args.maxlen], in_name=True)
     eg.add('actor_critic', core.RNNActorCritic if args.use_rnn else core.MLPActorCritic)
-    # eg.add("train_v_iters", 10)
     eg.add("train_pi_iters", [5])
     eg.add("pi_lr", [5e-5])
     eg.add('reward_factor', [1])
     eg.add('spectrum_repr', [args.spectrum_repr])
     eg.add('ac_kwargs:scalar_thick', [False])
 
-    # import pdb; pdb.set_trace()
 
-    eg.run(ppo, num_cpu=args.cpu, data_dir='/home/hzwang/Experiments/{}'.format(args.exp_name), datestamp=False)
+
+    eg.run(ppo, num_cpu=args.cpu, data_dir='./Experiments/{}'.format(args.exp_name), datestamp=False)
 
 

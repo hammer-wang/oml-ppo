@@ -15,13 +15,9 @@ from scipy.optimize import minimize
 import json
 from tqdm import tqdm
 
-DATABASE = '/home/hzwang/Projects/RL_multilayer/data'
+DATABASE = './data'
 INSULATORS = ['HfO2', 'SiO2', 'SiC', 'Al2O3', 'MgF2', 'TiO2', 'Fe2O3', 'MgF2', 'Si3N4', 'TiN', 'ZnO', 'ZnS', 'ZnSe']
 METALS = ['Ag', 'Al', 'Cr', 'Ge', 'Si', 'Ni']
-
-# 'Ag', 'Al', 'Al2O3', 'Cr', 'Fe2O3', 'Ge', 'HfO2', 'MgF2', 'Ni', 'Si', 'Si3N4', 'SiO2', 'Ti', 'TiN', 'TiO2', 'ZnO', 'ZnS', 'ZnSe'
-
-# ['SiO2', 'TiO2', 'Si', 'ZnO', 'Ti', 'Ni']
 
 num_workers = 8
 
@@ -49,47 +45,11 @@ def cal_reward(R, T, A, target):
         else:
             res = A
         
-        # print(np.clip(1 - np.abs(res[:len(v)] - v).mean() / v.mean(), 0, 1))
-        # reward += np.clip(1 - np.abs(res.squeeze() - v.squeeze()).mean() / v.mean(), 0, 1)
-        # reward += np.clip(1 - np.abs(res.squeeze() - v.squeeze()).mean() / v.mean(), 0, 1)
-        # reward += np.clip(1 - np.square(res.squeeze() - v.squeeze()).sum() / np.square(v).sum(), 0, 1)
         reward += 1 - np.abs(res.squeeze() - v).mean()
-        # reward = np.clip(100 - np.sqrt(np.square(res.squeeze()*100-v.squeeze()*100).mean()), 0, 100)
-        # reward += 1 - np.square(res - v).mean()
 
     reward /= len(target)
 
     return reward
-
-def cal_merit_mse(R, T, A, target):
-    '''
-    Calculate reward based on given spectrums. 
-    ACs photonics.
-
-    Args:
-        R, T, A: numpy array. Reflection, transmission, and 
-        absorption spectrums, respectively.
-        target: dict. {'R':np.array, 'T':np.array, 'A':np.array}
-
-    Returns:
-        reward: float. Reward for the spectrum. 
-    '''
-
-    merit = 0
-    for k, v in target.items():
-
-        if k == 'R':
-            res = R
-        elif k == 'T':
-            res = T
-        else:
-            res = A
-        
-        merit = merit + np.square(res - v).sum()
-
-    merit /= len(target)
-
-    return merit
 
 
 class Memory:
@@ -275,23 +235,7 @@ class TMM_sim():
 
             mat_nk_fn = interp1d(
                     mat_nk_data[:, 0].real, mat_nk_data[:, 1], kind='quadratic')
-            # print(self.wavelength)
             nk_dict[mat] = mat_nk_fn(self.wavelength)
-            
-            # try:
-            # mat_nk_fn = interp1d(
-            #         mat_nk_data[:, 0].real, mat_nk_data[:, 1], kind='quadratic')
-            # nk_dict[mat] = mat_nk_fn(self.wavelength)
-            # except:
-            #     print(mat_nk_data[:, 0].real, mat_nk_data[:, 1])
-            #     print(mat)
-            # try:
-            #     mat_nk_fn = interp1d(
-            #         mat_nk_data[:, 0].real, mat_nk_data[:, 1], kind='quadratic')
-            #     nk_dict[mat] = mat_nk_fn(self.wavelength)
-            # except:
-            #     print(mat_nk_data, os.path.join(DATABASE, mat + '.csv'))
-            #     print(mat, nk)
 
         return nk_dict
 
@@ -341,7 +285,6 @@ class TMM_sim():
                 else:
                     title = 'Air | ' + title + ' | Air'
                 plt.title(title, **{'size': '10'})
-            # plt.show()
 
         return R, T, A
 
@@ -379,26 +322,6 @@ def visualize_progress(file, x, ax=None, color='b', alpha=1):
 
     return df
 
-
-# def combine_tracker(folder):
-#     '''
-#     Merge all buffers
-#     '''
-#     trackers = []
-#     for file in os.listdir(folder):
-#         if file.startswith('design_tracker_'):
-#             tracker_file = os.path.join(folder, file)
-#             trackers.append(pkl.load(open(tracker_file, 'rb')))
-
-#     combined_tracker = DesignTracker(len(trackers[0].layer_ls))
-#     max_idx = np.argmax(np.array([tracker.max_ret_ls for tracker in trackers]), axis=0)
-#     for e in range(len(trackers[0].layer_ls)):
-#         combined_tracker.layer_ls[e] = trackers[max_idx[e]].layer_ls[e]
-#         combined_tracker.thick_ls[e] = trackers[max_idx[e]].thick_ls[e]
-#         combined_tracker.max_ret_ls[e] = trackers[max_idx[e]].max_ret_ls[e]
-
-#     return combined_tracker
-
 def combine_tracker(folder):
     '''
     Merge all buffers
@@ -430,7 +353,7 @@ def combine_tracker(folder):
 
 def summarize_res(exp_ls, seed_ls, color, alpha, x='Epoch'):
         
-    root = '/home/hzwang/Projects/spinningup/data/'
+    root = '../spinningup/data/'
     progress_ls = []
     max_ret_ls = []
 
@@ -444,33 +367,15 @@ def summarize_res(exp_ls, seed_ls, color, alpha, x='Epoch'):
         df = visualize_progress(progress_file, x=x, ax=ax, color=c, alpha=a)
 
         tracker = combine_tracker(folder)
-        # tracker_file = os.path.join(folder, 'design_tracker.pkl')
-        # tracker = pkl.load(open(tracker_file, 'rb'))
         progress = tracker.print_progress()
         print('{}, Best discovered so far {}'.format(exp, progress[np.argmax(tracker.max_ret_ls)]))
         progress_ls.append(progress)
-        # max_ret_ls.append('Max merit {:.3f}'.format(np.max(tracker.max_ret_ls)))
         max_ret_ls.append('Max merit {:.3f}'.format(np.max(df['MaxEpRet'])))
 
     ax[0].legend(max_ret_ls)
     ax[1].legend(exp_ls)
-    # ax[0].set_ylim([0.5,1])
     plt.show()
     return progress_ls
-
-#TODO: write a plotting script to combine all trianing progresses
-
-
-# process nk
-# folder = '/Users/wanghaozhu/Box/Guo_group/material_index_database/acs_photonics_absorber'
-# filename = os.path.join(folder, 'a-Si.csv')
-# nk_table = pd.read_csv(filename, sep='\t', names=['wl','n','k'])
-# if nk_table['wl'][0] > 10:
-#     nk_table['wl'] = nk_table['wl'] / 1000
-# nk_table.to_csv(filename)
-
-
-# load experiment subfolders
 
 def load_exp_res(folder):
     subfolders = [item for item in glob.glob(folder+'/*')]
@@ -493,7 +398,6 @@ def load_exp_res(folder):
                     hypers_dict[k] = [v] * rep
             
             hyper_df = pd.DataFrame(hypers_dict)
-            # hyper_df = pd.concat([pd.DataFrame(hypers_dict, index=[0])]*rep, ignore_index=True, axis=0)
             return hyper_df 
 
     first=True # first pandas file to load

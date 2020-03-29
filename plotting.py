@@ -11,7 +11,6 @@ from scipy.optimize import minimize
 from tqdm import tnrange
 
 import sys
-sys.path.insert(0, "/Users/wanghaozhu/Documents/Projects/RL_multilayer/RLMultilayer")
 from RLMultilayer.utils import visualize_progress, summarize_res, combine_tracker, load_exp_res, DesignTracker, cal_merit_mse, cal_reward
 from RLMultilayer.taskenvs.tasks import get_env_fn
 import glob
@@ -172,9 +171,7 @@ def compare_across_hparams(folder, hparams, abbrs):
     for i, hvals in enumerate(list(product(*unique_hvals))):
         df_ = select_subset(df, hparams, hvals)
         sns.lineplot(x='Epoch', y='AverageEpRet', ci='sd', hue=None, data=df_, ax=ax[0])
-        # ax[0].set_ylim([0,1])
         sns.lineplot(x='Epoch', y='MaxEpRet', ci='sd', hue=None, data=df_, ax=ax[1])
-        # ax[1].set_ylim([0,1])
         sns.lineplot(x='Epoch', y='Entropy', ci='sd', hue=None, data=df_, ax=ax[2])
         
         grouped_df = df_.groupby('Epoch')
