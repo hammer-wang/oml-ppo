@@ -19,10 +19,6 @@ class TMM(gym.Env):
 		self.merit_func = merit_func
 		self.target = target
 
-		# TODO: complete the observation_space and action_space configuration
-		# self.observation_space = spaces.Discrete(len(self.simulator.nk_dict) + 1)
-		# self.action_space = spaces.Tuple((spaces.Discrete(len(self.simulator.nk_dict) + 1)),spaces.Box(low=5e-3, high=))
-
 	def step(self, action):
 
 		layer, thickness = action
