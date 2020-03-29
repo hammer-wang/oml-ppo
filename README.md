@@ -2,14 +2,14 @@
 
 PyTorch implementation for OML-PPO. 
 
-## Prerequistes
+## Prerequisites
 - python=3.7.4
 - torch=1.3.1
 - torchvision=0.5.0
 - tmm=0.1.7
 - spinup=0.2.0
 
-## Run experiment
+## Run experiments
 
 Max length = 6:  
 python ppo_absorber_visnir.py --cpu 16 --maxlen 6 --exp_name absorber6 --use_rnn --discrete_thick --num_runs 1 --env PerfectAbsorberVisNIR-v0
