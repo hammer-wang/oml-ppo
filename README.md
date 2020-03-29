@@ -18,4 +18,4 @@ Max length = 15:
 python ppo_absorber_visnir.py --cpu 16 --maxlen 15 --exp_name perfect_absorber15 --use_rnn --discrete_thick --num_runs 1 --env PerfectAbsorberVisNIR-v1
 
 ## Plotting results
-Use final_results.ipynb__ to plot the results.
+Use final_results.ipynb to plot the results.
