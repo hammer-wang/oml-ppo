@@ -7,7 +7,7 @@ PyTorch implementation for OML-PPO.
 - torch=1.3.1
 - torchvision=0.5.0
 - tmm=0.1.7
-- spinup=0.2.0
+- spinningup=0.2.0
 
 ## Run experiments
 
