@@ -1,6 +1,6 @@
 # OML-PPO
 
-PyTorch implementation for OML-PPO. 
+PyTorch implementation for OML-PPO (https://arxiv.org/abs/2006.11940)
 
 ## Prerequisites
 - python=3.7.4
