@@ -1,6 +1,6 @@
 # OML-PPO
 
-PyTorch implementation for OML-PPO (https://arxiv.org/abs/2006.11940)
+PyTorch implementation for OML-PPO (https://iopscience.iop.org/article/10.1088/2632-2153/abc327)
 
 ## Prerequisites
 - python=3.7.4
@@ -19,3 +19,6 @@ python ppo_absorber_visnir.py --cpu 16 --maxlen 15 --exp_name perfect_absorber15
 
 ## Plotting results
 Use final_results.ipynb to plot the results.
+
+Cite:
+Wang, Haozhu, et al. "Automated multi-layer optical design via deep reinforcement learning." Machine Learning: Science and Technology 2.2 (2021): 025013.
